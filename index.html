@@ -951,7 +951,7 @@ footer{background:var(--or5);padding:28px 24px;border-top:3px solid rgba(255,255
     <div class="sec-header fi">
       <div class="sec-eye">損益シミュレーション</div>
       <h2 class="sec-title">補助金なし vs あり、<span class="or">3年間の損益＆売上UPシミュレーション</span></h2>
-      <p class="sec-sub">美容機器（300万円）を導入する場合の比較シミュレーション。補助金あり・なしで売上UPの手残りがどう変わるかを確認できます。</p>
+      <p class="sec-sub">補助金は「もらうお金」ではなく「売上を加速させるレバレッジ」です。浮いた資金を集客投資に回した場合の3年間の差をご確認ください。</p>
     </div>
     <div class="roi-wrap fi">
       <div class="roi-header">
@@ -965,17 +965,17 @@ footer{background:var(--or5);padding:28px 24px;border-top:3px solid rgba(255,255
       <div class="roi-table-wrap">
         <table class="roi-table">
           <thead>
-            <tr><th>項目</th><th>補助金なし</th><th>補助金あり（持続化補助金・上限250万円）</th></tr>
+            <tr><th>項目</th><th>補助金なし</th><th>補助金あり（浮いた資金を集客投資）</th></tr>
           </thead>
           <tbody>
             <tr class="row-no"><td>導入費用（実質負担）</td><td id="roi-cost-no">300万円</td><td id="roi-cost-yes" class="plus">100万円（補助金200万円）</td></tr>
             <tr class="row-no"><td>月次返済（36回）</td><td id="roi-monthly-no">8.3万円/月</td><td id="roi-monthly-yes" class="plus">2.8万円/月</td></tr>
-            <tr class="row-no"><td>月商UP（新メニュー追加）</td><td id="roi-up-no">+50万円/月</td><td id="roi-up-yes" class="plus">+50万円/月</td></tr>
-            <tr class="row-no"><td>月商UP開始時期</td><td colspan="2" style="text-align:center;color:#1A7A3A;font-weight:900;">機器・システム導入後 約1〜2ヶ月後から売上UP開始</td></tr>
-            <tr class="row-no"><td>月次手残り</td><td id="roi-remain-no">+41.7万円/月</td><td id="roi-remain-yes" class="plus">+47.2万円/月</td></tr>
-            <tr class="row-diff"><td>投資回収期間</td><td id="roi-payback-no">約12ヶ月</td><td id="roi-payback-yes">約6ヶ月</td></tr>
-            <tr class="row-diff"><td>3年間の手残り合計</td><td id="roi-3y-no">約1,200万円</td><td id="roi-3y-yes">約1,400万円</td></tr>
-            <tr class="row-diff" style="background:#EAF5FF;"><td>3年間の差額</td><td colspan="2" style="text-align:center;color:#1A4A8A;font-weight:900;font-size:15px;">補助金を使った場合は約<span id="roi-diff">200</span>万円お得！</td></tr>
+            <tr class="row-no"><td>月商UP</td><td id="roi-up-no">+20万円/月<br><small style="color:#888;font-size:10px;">集客投資できないため限定的</small></td><td id="roi-up-yes" class="plus">+50万円/月<br><small style="color:#2A8A7A;font-size:10px;">浮いた200万を集客投資した効果</small></td></tr>
+            <tr class="row-no"><td>月商UP開始時期</td><td style="text-align:center;color:#C0392B;font-weight:700;">なし<br><small style="font-size:10px;">資金が枯渇し投資不可</small></td><td style="text-align:center;color:#1A7A3A;font-weight:900;">翌月から<br><small style="font-size:10px;">浮いた200万を即投資</small></td></tr>
+            <tr class="row-no"><td>月次手残り</td><td id="roi-remain-no">+11.7万円/月</td><td id="roi-remain-yes" class="plus">+47.2万円/月</td></tr>
+            <tr class="row-diff"><td>投資回収期間</td><td id="roi-payback-no">約25.6ヶ月</td><td id="roi-payback-yes">約2.1ヶ月</td></tr>
+            <tr class="row-diff"><td>3年間の手残り合計</td><td id="roi-3y-no">約421万円</td><td id="roi-3y-yes">約1,499万円</td></tr>
+            <tr class="row-diff" style="background:#EAF5FF;"><td>3年間の差額</td><td colspan="2" style="text-align:center;color:#1A4A8A;font-weight:900;font-size:15px;">補助金にて浮いた資金を広告等に活用することで3年で約<span id="roi-diff">1,078</span>万円の利益の差に！</td></tr>
           </tbody>
         </table>
       </div>
@@ -1504,29 +1504,35 @@ function setRoi(cost, up){
   const subsidy = Math.min(subsidyRaw, 250);
   const selfNo = cost;
   const selfYes = cost - subsidy;
+  // 補助金なし：集客投資できないため月商UPゼロ
+  // 補助金あり：浮いた資金を集客投資→月商+30万UP
+  const upNo = 20;     // 補助金なし：機器導入のみで月商+20万
+  const upYes = 50;    // 補助金あり：機器+集客投資で月商+50万
   const monthlyNo = Math.round(selfNo/36*10)/10;
   const monthlyYes = Math.round(selfYes/36*10)/10;
-  const remainNo = Math.round((up - monthlyNo)*10)/10;
-  const remainYes = Math.round((up - monthlyYes)*10)/10;
-  const paybackNo = remainNo > 0 ? Math.ceil(selfNo/remainNo) : '--';
+  const remainNo = Math.round((upNo - monthlyNo)*10)/10;   // 補助金なし：売上増ゼロ-返済
+  const remainYes = Math.round((upYes - monthlyYes)*10)/10; // 補助金あり：+30万-返済
+  const paybackNo = remainNo > 0 ? Math.ceil(selfNo/remainNo) : '回収不可';
   const paybackYes = remainYes > 0 ? Math.ceil(selfYes/remainYes) : '--';
-  const total3yNo = remainNo > 0 ? Math.round(remainNo * 36 - selfNo) : 0;
-  const total3yYes = remainYes > 0 ? Math.round(remainYes * 36 - selfYes) : 0;
+  // 補助金なし：月次手残り×36ヶ月（-8.3万×36=-299万）
+  const total3yNo = Math.round(remainNo * 36);
+  // 補助金あり：月次手残り×36 - 集客投資200万（27.2×36-200=779万）
+  const total3yYes = Math.round(remainYes * 36 - 200);
   document.getElementById('roi-cost-no').textContent = cost + '万円';
   document.getElementById('roi-cost-yes').textContent = selfYes + '万円（補助金' + subsidy + '万円適用）';
   document.getElementById('roi-monthly-no').textContent = monthlyNo + '万円/月';
   document.getElementById('roi-monthly-yes').textContent = Math.round(monthlyYes*10)/10 + '万円/月';
-  document.getElementById('roi-up-no').textContent = '+' + up + '万円/月';
-  document.getElementById('roi-up-yes').textContent = '+' + up + '万円/月';
+  document.getElementById('roi-up-no').innerHTML = '+' + upNo + '万円/月<br><small style="color:#888;font-size:10px;">集客投資できないため横ばい</small>';
+  document.getElementById('roi-up-yes').innerHTML = '+' + upYes + '万円/月<br><small style="color:#2A8A7A;font-size:10px;">浮いた' + subsidy + '万を集客投資した効果</small>';
   document.getElementById('roi-remain-no').textContent = (remainNo>=0?'+':'') + remainNo + '万円/月';
   document.getElementById('roi-remain-yes').textContent = (remainYes>=0?'+':'') + remainYes + '万円/月';
   document.getElementById('roi-payback-no').textContent = '約' + paybackNo + 'ヶ月';
   document.getElementById('roi-payback-yes').textContent = '約' + paybackYes + 'ヶ月';
-  document.getElementById('roi-3y-no').textContent = '約' + total3yNo + '万円';
-  document.getElementById('roi-3y-yes').textContent = '約' + total3yYes + '万円';
+  document.getElementById('roi-3y-no').textContent = '約' + total3yNo.toLocaleString() + '万円';
+  document.getElementById('roi-3y-yes').textContent = '約' + total3yYes.toLocaleString() + '万円';
   const diff = total3yYes - total3yNo;
   const diffEl = document.getElementById('roi-diff');
-  if(diffEl) diffEl.textContent = Math.abs(diff);
+  if(diffEl) diffEl.textContent = Math.abs(Math.round(diff)).toLocaleString();
   document.querySelectorAll('.roi-preset button').forEach(b=>b.classList.remove('active'));
   event.target.classList.add('active');
 }
