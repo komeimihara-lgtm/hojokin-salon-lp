@@ -571,7 +571,7 @@ function calc(){
     const eOk=g.entity.includes(entity),mOk=g.emp.includes(emp),rOk=!g.rev||g.rev.length===0||rev===''||g.rev.includes(rev),cOk=cats.some(c=>g.cats.includes(c));
     let st='out',amt=0;
     if(eOk&&mOk&&rOk&&cOk){st='ok';amt=g.base;if(g.id==='jizoku')amt=(emp==='1')?100:250;if(g.id==='it')amt=450;if(g.id==='mono'&&entity==='sole')amt=750;if(g.id==='sho'){if(emp==='1')amt=50;else if(emp==='2-5')amt=200;else if(emp==='6-20')amt=600;else amt=1000;}}
-    else if(cOk&&(!eOk||!mOk||!rOk)){st='check';amt=Math.round(g.base*.4);}
+    else if(cOk&&(!eOk||!mOk||!rOk)){st='check';amt=0;}
     return{...g,st,amt};
   }).sort((a,b)=>{const o={ok:0,check:1,out:2};return o[a.st]-o[b.st]||b.amt-a.amt;});
 }
@@ -580,13 +580,13 @@ function render(grants){
   const el=grants.filter(g=>g.st!=='out'),total=el.reduce((s,g)=>s+g.amt,0);
   const f=fmt(total);
   document.getElementById('rAmt').innerHTML=f.num+'<span class="tc-unit">'+f.unit+'</span>';
-  document.getElementById('rDesc').textContent=el.length+'種類の補助金が対象です。最適な申請プランをご提案します。';
+  const okCount=grants.filter(g=>g.st==='ok').length;document.getElementById('rDesc').textContent=okCount+'種類の補助金が対象です。最適な申請プランをご提案します。';
   const bm={ok:{c:'rb-ok',l:'対象'},check:{c:'rb-check',l:'要確認'},out:{c:'rb-out',l:'対象外'}};
   document.getElementById('grantsGrid').innerHTML=grants.map((g,i)=>{
     const b=bm[g.st],best=i===0&&g.st==='ok';
     return`<div class="rgc${g.st==='out'?' rout':''}${best?' rbest':''}" style="animation-delay:${i*.07}s">
       <div class="rg-head"><div class="rg-left"><span class="rg-badge ${best?'rb-best':b.c}">${best?'★ 最もおすすめ':b.l}</span><div class="rg-name">${g.name}</div></div>
-      <div class="rg-right"><div class="rg-rate">補助率 ${g.rate}</div><div class="rg-max">${g.amt>0?g.amt.toLocaleString():'—'}<span class="rg-u">万円まで</span></div></div></div>
+      <div class="rg-right"><div class="rg-rate">補助率 ${g.rate}</div><div class="rg-max">${g.st==='check'?'<span style="font-size:14px;color:#888;">条件要確認</span>':(g.amt>0?g.amt.toLocaleString()+'<span class="rg-u">万円まで</span>':'<span class="rg-u">対象外</span>')}</div></div></div>
       <div class="rg-hr"></div>
       <div class="rg-meta"><div><div class="rgm-l">採択率</div><div class="rgm-v or">${g.adopt}</div></div><div><div class="rgm-l">申請〜採択</div><div class="rgm-v">${g.period}</div></div><div><div class="rgm-l">難易度</div><div class="rgm-v">${g.diff}</div></div><div><div class="rgm-l">締め切り</div><div class="rgm-v dl">${g.deadline}</div></div></div>
       <div class="rg-desc">${g.desc}</div>

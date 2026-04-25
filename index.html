@@ -707,7 +707,7 @@ footer{background:var(--or5);padding:28px 24px;border-top:3px solid rgba(255,255
         <div class="slabel"><svg viewBox="0 0 24 24"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg>Step 2　導入を検討しているもの（複数選択可）</div>
         <div class="cg">
           <div class="cbtn"><input type="checkbox" id="cm" value="machine" onchange="upd()"><label for="cm"><div class="cico"><svg viewBox="0 0 24 24"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg></div>美容機器<br><span class="catsub">美容機器・痩身など</span></label></div>
-          <div class="cbtn"><input type="checkbox" id="ca" value="ai" onchange="upd()"><label for="ca"><div class="cico"><svg viewBox="0 0 24 24"><rect x="4" y="4" width="16" height="16" rx="2"/><path d="M9 9h6M9 12h6M9 15h4"/></svg></div>AIソフト<br><span class="catsub">予約・管理システム</span></label></div>
+          <div class="cbtn"><input type="checkbox" id="ca" value="ai" onchange="upd()"><label for="ca"><div class="cico"><svg viewBox="0 0 24 24"><rect x="4" y="4" width="16" height="16" rx="2"/><path d="M9 9h6M9 12h6M9 15h4"/></svg></div>ソフト・AIツール<br><span class="catsub">予約・管理システム</span></label></div>
           <div class="cbtn"><input type="checkbox" id="cr" value="renovation" onchange="upd()"><label for="cr"><div class="cico"><svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg></div>店舗改装<br><span class="catsub">内装・設備</span></label></div>
           <div class="cbtn"><input type="checkbox" id="cad" value="ads" onchange="upd()"><label for="cad"><div class="cico"><svg viewBox="0 0 24 24"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg></div>広告・集客<br><span class="catsub">SNS・HP制作</span></label></div>
           <div class="cbtn"><input type="checkbox" id="ct" value="training" onchange="upd()"><label for="ct"><div class="cico"><svg viewBox="0 0 24 24"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg></div>教育・研修<br><span class="catsub">スタッフ育成</span></label></div>
@@ -715,14 +715,14 @@ footer{background:var(--or5);padding:28px 24px;border-top:3px solid rgba(255,255
         </div>
         <div class="slabel"><svg viewBox="0 0 24 24"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>Step 3　連絡先</div>
         <div class="fg-grid">
-          <div class="fg full"><div class="flbl">メールアドレス <span class="req">必須</span></div><input type="email" class="fi-input" id="email" placeholder="例：hello@salon.com" oninput="upd()"><div class="err-msg" id="emailErr">正しいメールアドレスを入力してください</div></div>
+          <div class="fg full"><div class="flbl">メールアドレス <span style="font-size:11px;font-weight:700;color:#888;background:#f0f0f0;padding:2px 8px;border-radius:4px;">任意</span></div><input type="email" class="fi-input" id="email" placeholder="例：hello@salon.com" oninput="upd()"><div style="font-size:11px;color:#888;margin-top:4px;">結果をメールで受け取りたい方のみご入力ください</div><div class="err-msg" id="emailErr">正しいメールアドレスを入力してください</div></div>
         </div>
         <!-- 免責チェックボックス -->
-        <div style="background:var(--cream2);border:1.5px solid var(--bdr);border-radius:8px;padding:16px 18px;margin-bottom:16px;">
-          <label style="display:flex;align-items:flex-start;gap:12px;cursor:pointer;">
-            <input type="checkbox" id="disclaimer" onchange="updateSubmitBtn()" style="width:18px;height:18px;margin-top:2px;accent-color:var(--or-mid);flex-shrink:0;">
-            <span style="font-size:12px;font-weight:700;color:var(--txt2);line-height:1.7;">
-              本診断はお客様の入力情報をもとにした<strong>概算シミュレーション</strong>です。実際の受給額・採択可否を保証・お約束するものではありません。正確な判断は個別の状況・事業計画の内容・公募要領によって異なります。上記を理解したうえで診断を開始します。
+        <div style="background:var(--cream2);border:1.5px solid var(--bdr);border-radius:8px;padding:12px 18px;margin-bottom:16px;">
+          <label style="display:flex;align-items:center;gap:12px;cursor:pointer;">
+            <input type="checkbox" id="disclaimer" onchange="updateSubmitBtn()" style="width:18px;height:18px;accent-color:var(--or-mid);flex-shrink:0;">
+            <span style="font-size:12px;font-weight:700;color:var(--txt2);line-height:1.6;">
+              ※診断結果はあくまで目安です。詳細は無料相談でご確認ください。
             </span>
           </label>
         </div>
@@ -731,7 +731,7 @@ footer{background:var(--or5);padding:28px 24px;border-top:3px solid rgba(255,255
         </div>
         <button class="sub-btn" id="submitBtn" onclick="runSim()" style="opacity:.5;cursor:not-allowed;">
           <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
-          10秒で無料査定する
+          今すぐ無料で診断する
         </button>
         <p class="form-note">完全無料・勧誘なし。メールは診断レポート送付のみに使用します。</p>
       </div>
@@ -1388,13 +1388,13 @@ footer{background:var(--or5);padding:28px 24px;border-top:3px solid rgba(255,255
 
 <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
 const GRANTS=[
-  {id:'jizoku',name:'小規模事業者持続化補助金',rate:'最大 2/3',base:250,deadline:'2026年4月30日',adopt:'約62%',period:'1〜2ヶ月',diff:'★★☆',desc:'通常枠50万円。インボイス特例+50万・賃金引上げ特例+150万の両方で最大250万円。ウェブ費は全体の1/4（最大50万）まで。機器購入・広告・HP改修・店舗改装が幅広く対象。商工会議所で様式4が必要。第19回締切2026年4月30日。',tags:['個人事業主OK','美容機器','広告・HP','店舗改装','教育研修'],cats:['machine','ads','renovation','training'],entity:['sole','corp','new'],emp:['1','2-5','6-20']},
-  {id:'it',name:'デジタル化・AI導入補助金',rate:'最大 75%',base:450,deadline:'2026年随時',adopt:'約70%',period:'2〜3ヶ月',diff:'★★☆',desc:'AI予約管理・POSシステム・顧客管理CRMなどITツール導入費を補助。補助率最大75%。申請はお客様がIT導入支援事業者と連携して行います。',tags:['AIソフト','予約管理','POS','補助率最大75%'],cats:['ai'],entity:['sole','corp'],emp:['1','2-5','6-20','21-50','51+']},
-  {id:'mono',name:'ものづくり補助金',rate:'最大 2/3',base:4000,deadline:'2026年5月8日',adopt:'約34%（第21次実績）',period:'3〜4ヶ月',diff:'★★★',desc:'高額美容機器・AI美容システム・新サービス開発に有効。美容室・エステ・治療院はサービス業として対象。補助上限最大4,000万円（従業員数による）。小規模事業者は補助率2/3。締切2026年5月8日。採択率約34%。賃上げ要件（年率3.5%増）あり。',tags:['美容機器','高額美容機器','大型設備','法人向け'],cats:['machine','medical'],entity:['sole','corp'],emp:['2-5','6-20','21-50','51+']},
-  {id:'sho',name:'省力化投資補助金（一般型・カタログ型）',rate:'最大 1/2',base:1500,deadline:'2026年随時',adopt:'約50%',period:'3〜5ヶ月',diff:'★★★',desc:'人手不足解消のための自動化・省力化投資を支援。複数台の業務用機器導入やAI連携に対応。',tags:['随時申請','締切なし','最短1ヶ月','カタログから選ぶだけ'],cats:['machine','ai','medical'],entity:['corp'],emp:['6-20','21-50','51+']},
+  {id:'jizoku',name:'小規模事業者持続化補助金',rate:'最大 2/3',base:250,deadline:'2026年4月30日',adopt:'約62%',period:'1〜2ヶ月',diff:'★★☆',desc:'通常枠50万円。インボイス特例+50万・賃金引上げ特例+150万の両方で最大250万円。ウェブ費は全体の1/4（最大50万）まで。機器購入・広告・HP改修・店舗改装が幅広く対象。商工会議所で様式4が必要。第19回締切2026年4月30日。',tags:['個人事業主OK','美容機器','広告・HP','店舗改装','教育研修'],cats:['machine','ads','renovation','training'],entity:['sole','corp','new'],emp:['1','2-5','6-20'],rev:['','500万円未満','500万〜1,000万円','1,000万〜3,000万円','3,000万〜5,000万円','5,000万円以上']},
+  {id:'it',name:'デジタル化・AI導入補助金',rate:'最大 75%',base:450,deadline:'2026年随時',adopt:'約70%',period:'2〜3ヶ月',diff:'★★☆',desc:'AI予約管理・POSシステム・顧客管理CRMなどITツール導入費を補助。補助率最大75%。申請はお客様がIT導入支援事業者と連携して行います。',tags:['ソフト・AIツール','予約管理','POS','補助率最大75%'],cats:['ai','ads'],entity:['sole','corp'],emp:['1','2-5','6-20','21-50','51+'],rev:['','500万円未満','500万〜1,000万円','1,000万〜3,000万円','3,000万〜5,000万円','5,000万円以上']},
+  {id:'mono',name:'ものづくり補助金',rate:'最大 2/3',base:4000,deadline:'2026年5月8日',adopt:'約34%（第21次実績）',period:'3〜4ヶ月',diff:'★★★',desc:'高額美容機器・AI美容システム・新サービス開発に有効。美容室・エステ・治療院はサービス業として対象。補助上限最大4,000万円（従業員数による）。小規模事業者は補助率2/3。締切2026年5月8日。採択率約34%。賃上げ要件（年率3.5%増）あり。従業員1名以上必須。',tags:['美容機器','高額美容機器','大型設備','法人向け'],cats:['machine','medical'],entity:['sole','corp'],emp:['2-5','6-20','21-50','51+'],rev:['1,000万〜3,000万円','3,000万〜5,000万円','5,000万円以上']},
+  {id:'sho',name:'省力化投資補助金（一般型・カタログ型）',rate:'最大 1/2',base:1500,deadline:'2026年随時',adopt:'約50%',period:'3〜5ヶ月',diff:'★★★',desc:'人手不足解消のための自動化・省力化投資を支援。複数台の業務用機器導入やAI連携に対応。',tags:['随時申請','締切なし','最短1ヶ月','カタログから選ぶだけ'],cats:['machine','ai','medical'],entity:['sole','corp'],emp:['1','2-5','6-20','21-50','51+'],rev:['','500万円未満','500万〜1,000万円','1,000万〜3,000万円','3,000万〜5,000万円','5,000万円以上']},
 ];
 const N=6;
-function filled(){let n=0;if(document.querySelector('input[name="entity"]:checked'))n++;if(document.getElementById('industry').value)n++;if(document.getElementById('emp').value)n++;if(document.getElementById('pref').value)n++;if(document.querySelector('input[type="checkbox"]:checked'))n++;if(document.getElementById('email').value.trim())n++;return n;}
+function filled(){let n=0;if(document.querySelector('input[name="entity"]:checked'))n++;if(document.getElementById('industry').value)n++;if(document.getElementById('emp').value)n++;if(document.getElementById('pref').value)n++;if(document.querySelector('input[type="checkbox"]:checked'))n++;// メールは任意のためプログレスから除外return n;}
 function upd(){const n=filled(),p=Math.round(n/N*100);document.getElementById('progFill').style.width=p+'%';document.getElementById('progPct').textContent=p+'%';const dots=document.querySelectorAll('.sd');dots.forEach((d,i)=>{d.classList.remove('active','done');if(i<n)d.classList.add('done');if(i===n&&i<dots.length)d.classList.add('active');});}
 function validate(){
   // 免責チェック
@@ -1409,14 +1409,13 @@ function validate(){
   // チェックボックスはdisclaimer以外を対象に
   const cats=Array.from(document.querySelectorAll('input[type="checkbox"]:checked')).filter(c=>c.id!=='disclaimer');
   const email=document.getElementById('email').value.trim();
-  if(!e||!ind||!em||!pr||!email||cats.length===0){alert('必須項目をすべて入力・選択してください。');return false;}
-  const ok=/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
-  document.getElementById('emailErr').style.display=ok?'none':'block';
-  return ok;
+  if(!e||!ind||!em||!pr||cats.length===0){alert('必須項目をすべて入力・選択してください。');return false;}
+  if(email){const ok=/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);document.getElementById('emailErr').style.display=ok?'none':'block';if(!ok)return false;}
+  return true;
 }
-function calc(){const entity=document.querySelector('input[name="entity"]:checked').value,emp=document.getElementById('emp').value,cats=Array.from(document.querySelectorAll('input[type="checkbox"]:checked')).filter(c=>c.id!=='disclaimer').map(c=>c.value);return GRANTS.map(g=>{const eOk=g.entity.includes(entity),mOk=g.emp.includes(emp),cOk=cats.some(c=>g.cats.includes(c));let st='out',amt=0;if(eOk&&mOk&&cOk){st='ok';amt=g.base;if(g.id==='jizoku'&&emp==='1')amt=200;if(g.id==='mono'&&entity==='sole')amt=750;if(g.id==='sho'&&emp==='6-20')amt=750;}else if(cOk&&(!eOk||!mOk)){st='check';amt=Math.round(g.base*.4);}return{...g,st,amt};}).sort((a,b)=>{const o={ok:0,check:1,out:2};return o[a.st]-o[b.st]||b.amt-a.amt;});}
+function calc(){const entity=document.querySelector('input[name="entity"]:checked').value,emp=document.getElementById('emp').value,rev=document.getElementById('rev')?document.getElementById('rev').value:'',cats=Array.from(document.querySelectorAll('input[type="checkbox"]:checked')).filter(c=>c.id!=='disclaimer').map(c=>c.value);return GRANTS.map(g=>{const eOk=g.entity.includes(entity),mOk=g.emp.includes(emp),rOk=!g.rev||g.rev.length===0||rev===''||g.rev.includes(rev),cOk=cats.some(c=>g.cats.includes(c));let st='out',amt=0;if(eOk&&mOk&&rOk&&cOk){st='ok';amt=g.base;if(g.id==='jizoku')amt=(emp==='1')?100:250;if(g.id==='it')amt=450;if(g.id==='mono'&&entity==='sole')amt=750;if(g.id==='sho'){if(emp==='1')amt=50;else if(emp==='2-5')amt=200;else if(emp==='6-20')amt=600;else amt=1000;}}else if(cOk&&(!eOk||!mOk||!rOk)){st='check';amt=0;}return{...g,st,amt};}).sort((a,b)=>{const o={ok:0,check:1,out:2};return o[a.st]-o[b.st]||b.amt-a.amt;});}
 function fmt(n){if(n>=10000)return(n/10000).toFixed(1).replace(/\.0$/,'')+'億';if(n>=1000)return(n/1000).toFixed(1).replace(/\.0$/,'')+'千万';return n.toLocaleString()+'万';}
-function render(grants){const el=grants.filter(g=>g.st!=='out'),total=el.reduce((s,g)=>s+g.amt,0);document.getElementById('rAmt').innerHTML=fmt(total)+'<span class="tc-unit">円</span>';document.getElementById('rDesc').textContent=el.length+'種類の補助金が対象です。最適な申請プランをご提案します。';if(el[0])document.getElementById('deadDate').textContent=el[0].deadline;const bm={ok:{c:'rb-ok',l:'対象'},check:{c:'rb-check',l:'要確認'},out:{c:'rb-out',l:'対象外'}};document.getElementById('grantsGrid').innerHTML=grants.map((g,i)=>{const b=bm[g.st],best=i===0&&g.st==='ok';return`<div class="rgc${g.st==='out'?' rout':''}${best?' rbest':''}" style="animation-delay:${i*.07}s"><div class="rg-head"><div class="rg-left"><span class="rg-badge ${best?'rb-best':b.c}">${best?'★ 最もおすすめ':b.l}</span><div class="rg-name">${g.name}</div></div><div class="rg-right"><div class="rg-rate">補助率 ${g.rate}</div><div class="rg-max">${g.amt>0?g.amt.toLocaleString():'—'}<span class="rg-u">万円まで</span></div></div></div><div class="rg-hr"></div><div class="rg-meta"><div><div class="rgm-l">採択率</div><div class="rgm-v or">${g.adopt}</div></div><div><div class="rgm-l">申請〜採択</div><div class="rgm-v">${g.period}</div></div><div><div class="rgm-l">難易度</div><div class="rgm-v">${g.diff}</div></div><div><div class="rgm-l">締め切り</div><div class="rgm-v dl">${g.deadline}</div></div></div><div class="rg-desc">${g.desc}</div><div class="rg-tags">${g.tags.map(t=>`<span class="rg-tag">${t}</span>`).join('')}</div></div>`;}).join('');}
+function render(grants){const el=grants.filter(g=>g.st!=='out'),total=el.reduce((s,g)=>s+g.amt,0);document.getElementById('rAmt').innerHTML=fmt(total)+'<span class="tc-unit">円</span>';const okCount=grants.filter(g=>g.st==='ok').length;document.getElementById('rDesc').textContent=okCount+'種類の補助金が対象です。最適な申請プランをご提案します。';if(el[0])document.getElementById('deadDate').textContent=el[0].deadline;const bm={ok:{c:'rb-ok',l:'対象'},check:{c:'rb-check',l:'要確認'},out:{c:'rb-out',l:'対象外'}};document.getElementById('grantsGrid').innerHTML=grants.map((g,i)=>{const b=bm[g.st],best=i===0&&g.st==='ok';return`<div class="rgc${g.st==='out'?' rout':''}${best?' rbest':''}" style="animation-delay:${i*.07}s"><div class="rg-head"><div class="rg-left"><span class="rg-badge ${best?'rb-best':b.c}">${best?'★ 最もおすすめ':b.l}</span><div class="rg-name">${g.name}</div></div><div class="rg-right"><div class="rg-rate">補助率 ${g.rate}</div><div class="rg-max">${g.st==='check'?'<span style="font-size:14px;color:#888;">条件要確認</span>':(g.amt>0?g.amt.toLocaleString()+'<span class="rg-u">万円まで</span>':'<span class="rg-u">対象外</span>')}</div></div></div><div class="rg-hr"></div><div class="rg-meta"><div><div class="rgm-l">採択率</div><div class="rgm-v or">${g.adopt}</div></div><div><div class="rgm-l">申請〜採択</div><div class="rgm-v">${g.period}</div></div><div><div class="rgm-l">難易度</div><div class="rgm-v">${g.diff}</div></div><div><div class="rgm-l">締め切り</div><div class="rgm-v dl">${g.deadline}</div></div></div><div class="rg-desc">${g.desc}</div><div class="rg-tags">${g.tags.map(t=>`<span class="rg-tag">${t}</span>`).join('')}</div></div>`;}).join('');}
 function runSim(){
   if(!validate())return;
   const ld=document.getElementById('simLoader');
