@@ -645,16 +645,38 @@ function updateSubmitBtn(){
 }
 
 
-/* ── iframe高さ自動調整 ── */
+/* ── iframe高さ自動調整（強化版） ── */
 function notifyHeight(){
   try{
-    const h=document.documentElement.scrollHeight;
+    const h=Math.max(
+      document.body.scrollHeight,
+      document.body.offsetHeight,
+      document.documentElement.scrollHeight,
+      document.documentElement.offsetHeight
+    );
     window.parent.postMessage({type:'sim-resize',height:h},'*');
   }catch(e){}
 }
-const _ro=new ResizeObserver(notifyHeight);
+// ResizeObserverで変化を監視
+const _ro=new ResizeObserver(function(){
+  notifyHeight();
+});
 _ro.observe(document.body);
+// 初回・DOM読み込み後・画像読み込み後にも通知
 notifyHeight();
+document.addEventListener('DOMContentLoaded',notifyHeight);
+window.addEventListener('load',notifyHeight);
+// 診断結果表示後にも確実に通知（0.5秒後・1秒後・2秒後）
+const _origRender=typeof render==='function'?render:null;
+if(_origRender){
+  window.render=function(results){
+    _origRender(results);
+    setTimeout(notifyHeight,100);
+    setTimeout(notifyHeight,500);
+    setTimeout(notifyHeight,1000);
+    setTimeout(notifyHeight,2000);
+  };
+}
 </script>
 </body>
 </html>
