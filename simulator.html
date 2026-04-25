@@ -1,0 +1,660 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>補助金診断シミュレーター</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700;900&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;-webkit-text-size-adjust:100%;}
+body{
+  font-family:'Noto Sans JP',sans-serif;
+  background:#F7E6D3;
+  color:#3A3530;
+  line-height:1.8;
+  -webkit-font-smoothing:antialiased;
+  display:flex;
+  flex-direction:column;
+  min-height:100vh;
+}
+
+.sim-header{
+  text-align:center;
+  padding:0 24px 0;
+  max-width:720px;
+  margin:0 auto;
+}
+.sim-header-sub-row{
+  display:flex;
+  align-items:center;
+  justify-content:flex-start;
+  gap:28px;
+  margin-bottom:-36px;
+  position:relative;
+  z-index:3;
+  pointer-events:none;
+}
+.sim-header-sub{
+  font-size:18px;
+  font-weight:700;
+  color:#3A3530;
+  display:inline-block;
+  text-align:left;
+}
+.sp-only{display:none;}
+@media(max-width:640px){.sp-only{display:inline;}}
+.sim-header-illust{
+  width:130px;
+  height:auto;
+  flex-shrink:0;
+  position:relative;
+  z-index:5;
+}
+
+.sim-card-wrap{
+  max-width:720px;
+  margin:0 auto;
+  padding:0 24px;
+  position:relative;
+  display:flex;
+  flex-direction:column;
+  flex:1;
+  width:100%;
+}
+.sim-frame{
+  border:3px solid #E5805B;
+  border-bottom:none;
+  border-radius:0;
+  padding:0;
+  position:relative;
+  background:transparent;
+}
+.sim-triangle{
+  height:72px;
+  background:#E5805B;
+  clip-path:polygon(0 0, 100% 0, 50% 100%);
+  margin-top:auto;
+}
+.sim-card{
+  background:#fff;
+  border-radius:0;
+  padding:36px 36px 32px;
+  box-shadow:none;
+  position:relative;
+}
+
+.prog-wrap{margin-bottom:6px;}
+.prog-meta{
+  display:flex;justify-content:space-between;align-items:center;
+  margin-bottom:8px;
+}
+.prog-lbl{
+  font-size:11px;
+  font-weight:700;
+  color:#E5805B;
+  letter-spacing:.04em;
+}
+.prog-pct{
+  font-size:11px;
+  font-weight:700;
+  color:#E5805B;
+}
+.prog-bar{
+  width:100%;height:4px;
+  background:#E5DDD5;
+  border-radius:2px;overflow:hidden;
+}
+.prog-fill{
+  height:100%;width:0%;
+  background:linear-gradient(90deg,#E5805B,#E8A878);
+  border-radius:2px;transition:width .35s ease;
+}
+.sdots{
+  display:flex;justify-content:center;
+  gap:5px;margin:14px 0 22px;
+}
+.sd{
+  width:7px;height:7px;border-radius:50%;
+  background:#DDD7D0;transition:all .3s;
+}
+.sd.done{background:#E0B89A;}
+.sd.active{background:#E5805B;width:20px;border-radius:4px;}
+
+.slabel{
+  font-size:11px;
+  font-weight:900;
+  letter-spacing:.06em;
+  color:#E5805B;
+  margin-bottom:14px;
+  padding:6px 12px;
+  background:#FDE8D5;
+  border-left:3px solid #E5805B;
+  border-radius:0 5px 5px 0;
+}
+
+.fg-grid{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:14px;
+  margin-bottom:22px;
+}
+.fg{display:flex;flex-direction:column;gap:5px;}
+.fg.full{grid-column:1/-1;}
+.flbl{
+  font-size:12px;
+  font-weight:700;
+  color:#5A524A;
+  display:flex;align-items:center;gap:6px;
+}
+.req{
+  font-size:9px;font-weight:800;
+  background:#E08A5A;color:#fff;
+  padding:1px 7px;border-radius:10px;
+  line-height:1.6;
+}
+.req.opt{background:#B0A8A0;}
+.form-helper{
+  font-size:11px;font-weight:500;color:#8A8078;
+  margin-top:4px;line-height:1.5;
+}
+
+.fi-input,.fi-sel{
+  background:#FFFCF8;
+  border:1.5px solid #DDD7D0;
+  border-radius:6px;
+  color:#3A3530;
+  font-family:'Noto Sans JP',sans-serif;
+  font-size:13px;font-weight:500;
+  padding:9px 12px;
+  outline:none;
+  transition:border-color .2s,box-shadow .2s;
+  width:100%;
+  -webkit-appearance:none;appearance:none;
+}
+.fi-input::placeholder{color:#B0A8A0;}
+.fi-input:focus,.fi-sel:focus{
+  border-color:#E5805B;
+  background:#fff;
+  box-shadow:0 0 0 3px rgba(217,138,90,.10);
+}
+.fi-sel{
+  cursor:pointer;color:#B0A8A0;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%23AAA' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+  background-repeat:no-repeat;
+  background-position:right 12px center;
+  padding-right:32px;
+}
+.fi-sel option{color:#3A3530;}
+.fi-sel:not([data-empty]){color:#3A3530;}
+
+.rgroup{display:flex;gap:8px;}
+.rbtn{flex:1;position:relative;}
+.rbtn input{position:absolute;opacity:0;width:0;height:0;}
+.rbtn label{
+  display:flex;align-items:center;justify-content:center;
+  padding:9px 6px;
+  background:#FFFCF8;
+  border:1.5px solid #DDD7D0;
+  border-radius:6px;
+  font-size:13px;font-weight:600;color:#8A8078;
+  cursor:pointer;transition:all .15s;white-space:nowrap;
+}
+.rbtn input:checked+label{
+  background:#FFF4ED;
+  border-color:#E5805B;
+  color:#906030;
+  font-weight:800;
+}
+.rbtn label:hover{border-color:#D0B8A0;}
+
+.cg{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:10px;
+  margin-bottom:22px;
+}
+.cbtn{position:relative;}
+.cbtn input{position:absolute;opacity:0;width:0;height:0;}
+.cbtn label{
+  display:flex;flex-direction:column;align-items:center;
+  gap:5px;
+  padding:14px 6px 12px;
+  background:#FFFCF8;
+  border:1.5px solid #DDD7D0;
+  border-radius:8px;
+  font-size:11px;font-weight:700;color:#6A625A;
+  cursor:pointer;transition:all .15s;
+  text-align:center;line-height:1.4;
+}
+.cico{
+  width:32px;height:32px;
+  display:flex;align-items:flex-end;justify-content:center;
+  margin-bottom:8px;line-height:0;
+}
+.cico img{max-width:100%;max-height:100%;display:block;}
+.cico.cico-xs img{max-width:90%;max-height:90%;}
+.cico.cico-s img{max-width:80%;max-height:80%;}
+.cbtn input:checked+label{
+  background:#FFF4ED;border-color:#E5805B;
+  color:#906030;font-weight:800;
+}
+.cbtn label:hover{border-color:#D0B8A0;}
+.catsub{font-size:9px;color:#E5805B;font-weight:500;}
+
+.disclaimer-box{
+  background:#F8F4F0;
+  border:1.5px solid #DDD7D0;
+  border-radius:6px;
+  padding:12px 14px;
+  margin-bottom:14px;
+}
+.disclaimer-box label{
+  display:flex;align-items:flex-start;gap:10px;cursor:pointer;
+}
+.disclaimer-box input[type="checkbox"]{
+  width:15px;height:15px;margin-top:3px;
+  accent-color:#E5805B;flex-shrink:0;
+}
+.disclaimer-box span{
+  font-size:10.5px;font-weight:500;color:#8A8078;line-height:1.75;
+}
+.disclaimer-box span strong{font-weight:700;color:#5A524A;}
+.disclaimer-err{
+  font-size:10px;font-weight:700;color:#D03030;
+  display:none;margin-bottom:10px;
+  padding:7px 12px;background:#FFF5F5;border-radius:5px;
+}
+
+.sub-btn{
+  width:100%;padding:14px 24px;
+  background:linear-gradient(135deg,#C07848,#E5805B);
+  color:#fff;border:none;border-radius:8px;
+  font-family:'Noto Sans JP',sans-serif;
+  font-size:14px;font-weight:900;
+  cursor:pointer;transition:all .2s;
+  display:flex;align-items:center;justify-content:center;gap:8px;
+  letter-spacing:.05em;
+  box-shadow:0 4px 14px rgba(192,120,72,.28);
+  position:relative;overflow:hidden;
+}
+.sub-btn::after{
+  content:'';position:absolute;top:0;left:-100%;
+  width:60%;height:100%;
+  background:linear-gradient(90deg,transparent,rgba(255,255,255,.15),transparent);
+  transition:left .5s;
+}
+.sub-btn:hover::after{left:150%;}
+.sub-btn:hover{transform:translateY(-1px);box-shadow:0 6px 18px rgba(192,120,72,.32);}
+.sub-btn svg{flex-shrink:0;}
+.form-note{
+  text-align:center;
+  font-size:10px;font-weight:500;
+  color:#B0A8A0;
+  margin-top:10px;
+}
+.err-msg{
+  font-size:10px;font-weight:700;color:#D03030;
+  display:none;margin-top:2px;
+}
+
+.sim-loader{
+  display:none;position:fixed;inset:0;
+  background:linear-gradient(145deg,#C07848,#E5805B);
+  z-index:300;align-items:center;justify-content:center;
+  flex-direction:column;gap:20px;
+}
+.sim-loader.on{display:flex;}
+.loader-ring{position:relative;width:72px;height:72px;}
+.loader-ring::before,.loader-ring::after{
+  content:'';position:absolute;border-radius:50%;
+  top:50%;left:50%;transform:translate(-50%,-50%);
+}
+.loader-ring::before{
+  width:72px;height:72px;
+  border:3px solid rgba(255,255,255,.15);
+  border-top-color:#FFE066;animation:spin .9s linear infinite;
+}
+.loader-ring::after{
+  width:48px;height:48px;
+  border:2px solid rgba(255,255,255,.10);
+  border-bottom-color:rgba(255,255,255,.6);
+  animation:spin .7s linear infinite reverse;
+}
+@keyframes spin{to{transform:translate(-50%,-50%) rotate(360deg);}}
+.loader-count{font-size:72px;font-weight:900;color:#fff;line-height:1;}
+.loader-txt{font-size:12px;font-weight:700;color:rgba(255,255,255,.55);letter-spacing:.12em;}
+
+.sim-results{display:none;margin-top:20px;}
+.sim-results.on{display:block;animation:fadeUp .5s ease both;}
+@keyframes fadeUp{from{opacity:0;transform:translateY(16px);}to{opacity:1;transform:translateY(0);}}
+.total-card{
+  background:#E5805B;
+  border-radius:14px;padding:40px 24px 36px;text-align:center;
+  margin-bottom:20px;position:relative;overflow:hidden;
+}
+.tc-pre{font-size:26px;font-weight:800;color:#fff;margin-bottom:6px;letter-spacing:.04em;}
+.tc-amount{font-size:clamp(56px,12vw,84px);font-weight:900;color:#fff;line-height:1;margin-bottom:4px;letter-spacing:.01em;}
+.tc-unit{font-size:clamp(26px,5vw,36px);font-weight:800;color:#fff;margin-left:4px;}
+.tc-desc{font-size:15px;font-weight:600;color:#fff;margin-top:14px;}
+.r-grants{display:flex;flex-direction:column;gap:10px;margin-bottom:0;}
+.rgc{
+  background:#fff;border:1.5px solid #E5805B;border-radius:10px;
+  padding:18px 20px;
+  animation:fadeUp .45s ease both;
+}
+.rgc.rbest{border-width:2px;}
+.rg-head{display:flex;align-items:flex-start;justify-content:space-between;gap:10px;margin-bottom:8px;}
+.rg-left{flex:1;}
+.rg-badge{display:inline-block;font-size:11px;font-weight:800;padding:3px 10px;border-radius:3px;margin-bottom:6px;letter-spacing:.03em;}
+.rb-best{background:#E5805B;color:#fff;}
+.rb-ok{background:#528589;color:#fff;}
+.rb-check{background:#C4891A;color:#fff;}
+.rb-out{background:#B8B0A8;color:#fff;}
+.rg-name{font-size:17px;font-weight:800;color:#3A3530;line-height:1.4;}
+.rg-right{text-align:right;flex-shrink:0;}
+.rg-rate{font-size:12px;font-weight:600;color:#8A8078;margin-bottom:2px;}
+.rg-max{font-size:34px;font-weight:900;color:#E5805B;line-height:1.1;}
+.rg-u{font-size:14px;font-weight:700;color:#3A3530;margin-left:2px;}
+.rg-hr{height:1px;background:#EAE5E0;margin:10px 0;}
+.rg-meta{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:10px;}
+.rgm-l{font-size:12px;font-weight:600;color:#8A8078;margin-bottom:2px;}
+.rgm-v{font-size:14px;font-weight:800;color:#3A3530;}
+.rgm-v.or{color:#4BA2AB;}
+.rgm-v.dl{color:#3A3530;}
+.rg-desc{font-size:13px;font-weight:500;color:#5A524A;line-height:1.7;}
+.rg-tags{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px;}
+.rg-tag{font-size:12px;font-weight:600;padding:3px 10px;border-radius:4px;background:#FFF4ED;color:#E5805B;}
+
+
+
+@media(max-width:640px){
+  .sim-header{padding:0 16px 0;}
+  .sim-header-sub-row{gap:6px;}
+  .sim-header-sub{font-size:15px;}
+  .sim-card-wrap{padding:0 16px 0;}
+  .sim-card{padding:28px 18px 24px;border-radius:0;}
+  .sim-card-wrap{padding:0 16px;}
+  .sim-triangle{height:56px;}
+  .sim-header-sub-row{gap:18px;margin-bottom:-26px;}
+  .sim-header-illust{width:100px;}
+  body:has(.sim-results.on) .sim-header-sub-row{margin-bottom:-40px;}
+  .total-card{padding:26px 20px 22px;margin-bottom:16px;}
+  .tc-pre{display:inline-block;font-size:22px;margin:0 10px 0 0;vertical-align:baseline;}
+  .tc-amount{display:inline-block;font-size:46px;margin:0;vertical-align:baseline;}
+  .tc-unit{font-size:22px;margin-left:4px;}
+  .tc-desc{display:block;font-size:12px;margin-top:10px;}
+  .rg-max{font-size:32px;}
+  .rg-name{font-size:16px;}
+  .rg-rate{font-size:12px;}
+  .rg-u{font-size:14px;}
+  .rgm-v{font-size:13px;}
+  .rgm-l{font-size:12px;}
+  .rg-desc{font-size:13px;}
+  .rg-tag{font-size:12px;}
+  .fg-grid{grid-template-columns:1fr;gap:12px;}
+  .fg.full{grid-column:1;}
+  .cg{grid-template-columns:repeat(2,1fr);gap:8px;}
+  .rg-meta{grid-template-columns:1fr 1fr;}
+}
+@media(max-width:380px){
+  .sim-card{padding:22px 14px 20px;}
+  .rgroup{flex-direction:column;gap:6px;}
+}
+</style>
+</head>
+<body>
+
+<!-- LOADER -->
+<div class="sim-loader" id="simLoader">
+  <div class="loader-ring"></div>
+  <div class="loader-count" id="lcount">10</div>
+  <div class="loader-txt">秒で査定中…</div>
+</div>
+
+<!-- ══════ HEADER ══════ -->
+<div class="sim-header">
+  <div class="sim-header-sub-row">
+    <img class="sim-header-illust" src="https://storage.googleapis.com/studio-design-asset-files/projects/BRO35rR4aD/s-268x368_webp_60099bae-3f52-4d25-8add-21c54aed3cc5.png" alt="">
+    <p class="sim-header-sub">約30秒で入力完了。<br class="sp-only">診断結果はメールで確認！</p>
+  </div>
+</div>
+
+<!-- ══════ FORM ══════ -->
+<div class="sim-card-wrap">
+  <div class="sim-frame" id="simFrame">
+  <div class="sim-card" id="simForm">
+
+    <!-- Progress -->
+    <div class="prog-wrap">
+      <div class="prog-meta">
+        <span class="prog-lbl">入力状況</span>
+        <span class="prog-pct" id="progPct">0%</span>
+      </div>
+      <div class="prog-bar"><div class="prog-fill" id="progFill"></div></div>
+    </div>
+    <div class="sdots" id="sdots">
+      <div class="sd active"></div><div class="sd"></div><div class="sd"></div><div class="sd"></div><div class="sd"></div><div class="sd"></div>
+    </div>
+
+    <!-- Step 1 -->
+    <div class="slabel">Step 1　基本情報</div>
+    <div class="fg-grid">
+      <div class="fg full">
+        <div class="flbl">事業形態 <span class="req">必須</span></div>
+        <div class="rgroup">
+          <div class="rbtn"><input type="radio" name="entity" id="e1" value="sole" onchange="upd()"><label for="e1">個人事業主</label></div>
+          <div class="rbtn"><input type="radio" name="entity" id="e2" value="corp" onchange="upd()"><label for="e2">法人</label></div>
+          <div class="rbtn"><input type="radio" name="entity" id="e3" value="new" onchange="upd()"><label for="e3">開業予定</label></div>
+        </div>
+      </div>
+      <div class="fg">
+        <div class="flbl">業種 <span class="req">必須</span></div>
+        <select class="fi-sel" id="industry" onchange="upd();this.style.color=this.value?'#3A3530':'#B0A8A0'">
+          <option value="">✓ 選択してください</option>
+          <option>美容室・ヘアサロン</option><option>エステサロン</option><option>脱毛専門サロン</option><option>ネイル・マツエクサロン</option><option>美容クリニック・美容機関</option><option>リラクゼーション・マッサージ</option><option>その他美容関連</option>
+        </select>
+      </div>
+      <div class="fg">
+        <div class="flbl">従業員数 <span class="req">必須</span></div>
+        <select class="fi-sel" id="emp" onchange="upd();this.style.color=this.value?'#3A3530':'#B0A8A0'">
+          <option value="">✓ 選択してください</option>
+          <option value="1">1人（一人経営）</option><option value="2-5">2〜5人</option><option value="6-20">6〜20人</option><option value="21-50">21〜50人</option><option value="51+">51人以上</option>
+        </select>
+      </div>
+      <div class="fg">
+        <div class="flbl">都道府県 <span class="req">必須</span></div>
+        <select class="fi-sel" id="pref" onchange="upd();this.style.color=this.value?'#3A3530':'#B0A8A0'">
+          <option value="">✓ 選択してください</option>
+          <option>北海道</option><option>青森県</option><option>岩手県</option><option>宮城県</option><option>秋田県</option><option>山形県</option><option>福島県</option><option>茨城県</option><option>栃木県</option><option>群馬県</option><option>埼玉県</option><option>千葉県</option><option>東京都</option><option>神奈川県</option><option>新潟県</option><option>富山県</option><option>石川県</option><option>福井県</option><option>山梨県</option><option>長野県</option><option>岐阜県</option><option>静岡県</option><option>愛知県</option><option>三重県</option><option>滋賀県</option><option>京都府</option><option>大阪府</option><option>兵庫県</option><option>奈良県</option><option>和歌山県</option><option>鳥取県</option><option>島根県</option><option>岡山県</option><option>広島県</option><option>山口県</option><option>徳島県</option><option>香川県</option><option>愛媛県</option><option>高知県</option><option>福岡県</option><option>佐賀県</option><option>長崎県</option><option>熊本県</option><option>大分県</option><option>宮崎県</option><option>鹿児島県</option><option>沖縄県</option>
+        </select>
+      </div>
+      <div class="fg full">
+        <div class="flbl">年間売上（概算）</div>
+        <select class="fi-sel" id="rev" onchange="upd();this.style.color=this.value?'#3A3530':'#B0A8A0'">
+          <option value="">✓ 選択してください（任意）</option>
+          <option>500万円未満</option><option>500万〜1,000万円</option><option>1,000万〜3,000万円</option><option>3,000万〜5,000万円</option><option>5,000万円以上</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- Step 2 -->
+    <div class="slabel">Step 2　導入を検討しているもの（複数選択可）</div>
+    <div class="cg">
+      <div class="cbtn"><input type="checkbox" id="cm" value="machine" onchange="upd()"><label for="cm"><div class="cico cico-s"><img src="https://storage.googleapis.com/studio-design-asset-files/projects/BRO35rR4aD/s-68x76_webp_7c511a1d-6a83-47e9-8b43-39cf71f07acd.png" alt=""></div>美容機器<br><span class="catsub">美容機器・痩身など</span></label></div>
+      <div class="cbtn"><input type="checkbox" id="ca" value="ai" onchange="upd()"><label for="ca"><div class="cico cico-xs"><img src="https://storage.googleapis.com/studio-design-asset-files/projects/BRO35rR4aD/s-56x53_webp_0b798093-b6f2-41b1-a83b-df7f4f9510c2.png" alt=""></div>AIソフト<br><span class="catsub">予約・管理システム</span></label></div>
+      <div class="cbtn"><input type="checkbox" id="cr" value="renovation" onchange="upd()"><label for="cr"><div class="cico cico-s"><img src="https://storage.googleapis.com/studio-design-asset-files/projects/BRO35rR4aD/s-50x53_webp_1dd8886b-3814-4e93-b254-86387358c646.png" alt=""></div>内装・設備<br><span class="catsub">店舗改装</span></label></div>
+      <div class="cbtn"><input type="checkbox" id="cad" value="ads" onchange="upd()"><label for="cad"><div class="cico"><img src="https://storage.googleapis.com/studio-design-asset-files/projects/BRO35rR4aD/s-88x59_webp_963fc3bc-5501-4051-9106-44bc8d49f8bd.png" alt=""></div>広告・集客<br><span class="catsub">SNS・HP制作</span></label></div>
+      <div class="cbtn"><input type="checkbox" id="ct" value="training" onchange="upd()"><label for="ct"><div class="cico"><img src="https://storage.googleapis.com/studio-design-asset-files/projects/BRO35rR4aD/s-59x53_webp_326f8f1d-5f64-47f5-9485-cb48ea525cc5.png" alt=""></div>教育・研修<br><span class="catsub">スタッフ育成</span></label></div>
+      <div class="cbtn"><input type="checkbox" id="cme" value="medical" onchange="upd()"><label for="cme"><div class="cico cico-s"><img src="https://storage.googleapis.com/studio-design-asset-files/projects/BRO35rR4aD/s-46x53_webp_1dc936d3-72b0-44cc-b13f-d7d048880860.png" alt=""></div>高額美容機器<br><span class="catsub">クリニック向け</span></label></div>
+    </div>
+
+    <!-- Step 3 -->
+    <div class="slabel">Step 3　連絡</div>
+    <div class="fg-grid">
+      <div class="fg full">
+        <div class="flbl">メールアドレス <span class="req opt">任意</span></div>
+        <input type="email" class="fi-input" id="email" placeholder="例：hello@salon.com" oninput="upd()">
+        <div class="form-helper">結果をメールで受け取りたい方のみご入力ください</div>
+        <div class="err-msg" id="emailErr">正しいメールアドレスを入力してください</div>
+      </div>
+    </div>
+
+    <!-- Disclaimer -->
+    <div class="disclaimer-box">
+      <label>
+        <input type="checkbox" id="disclaimer" onchange="updateSubmitBtn()">
+        <span>※診断結果はあくまで目安です。詳細は無料相談でご確認ください。</span>
+      </label>
+    </div>
+    <div class="disclaimer-err" id="disclaimer-err">上記の確認事項にチェックを入れてから診断を開始してください。</div>
+
+    <!-- Submit -->
+    <button class="sub-btn" id="submitBtn" onclick="runSim()" style="opacity:.5;cursor:not-allowed;">
+      今すぐ無料で診断する
+    </button>
+    <p class="form-note">完全無料・勧誘なし。メールは診断レポート送付のみに使用します。</p>
+  </div>
+  </div><!-- /.sim-frame -->
+
+  <!-- Results -->
+  <div class="sim-results" id="simResults">
+    <div class="total-card">
+      <div class="tc-pre">最大</div>
+      <div class="tc-amount" id="rAmt">—<span class="tc-unit">万円</span></div>
+      <div class="tc-desc" id="rDesc"></div>
+    </div>
+    <div class="r-grants" id="grantsGrid"></div>
+  </div>
+  <div class="sim-triangle"></div>
+</div>
+
+<script>
+const GRANTS=[
+  {id:'jizoku',name:'小規模事業者持続化補助金',rate:'最大 2/3',base:250,deadline:'2026年4月30日',adopt:'約62%',period:'1〜2ヶ月',diff:'★★☆',desc:'美容室・エステ・ネイル・治療院など小規模事業者が対象。店舗改装・広告・販促物制作・美容機器導入に有効。通常枠50万円、インボイス特例+50万、賃金引上げ特例+150万で最大250万円。採択率約62%。商工会議所の経営指導員との事業計画策定が必要。',tags:['個人事業主OK','美容機器','広告・HP','店舗改装'],cats:['machine','ads','renovation','training'],entity:['sole','corp','new'],emp:['1','2-5','6-20']},
+  {id:'it',name:'デジタル化・AI導入補助金',rate:'最大 75%',base:450,deadline:'2026年随時',adopt:'約70%',period:'2〜3ヶ月',diff:'★★☆',desc:'AI予約管理・POSシステム・顧客管理CRM・電子カルテ等のITツール導入費を補助。美容室・エステ・治療院のデジタル化・業務効率化に有効。補助率最大75%、補助上限450万円。締切随時申請可能。採択率約70%。IT導入支援事業者登録ツールから選択。',tags:['AIソフト','予約管理','POS','補助率最大75%'],cats:['ai'],entity:['sole','corp'],emp:['1','2-5','6-20','21-50','51+']},
+  {id:'mono',name:'ものづくり補助金',rate:'最大 2/3',base:4000,deadline:'2026年5月8日',adopt:'約34%',period:'3〜4ヶ月',diff:'★★★',desc:'高額美容機器・AI美容システム・新サービス開発に有効。美容室・エステ・治療院はサービス業として対象。補助上限最大4,000万円（従業員数による）。小規模事業者は補助率2/3。締切2026年5月8日。採択率約34%。賃上げ要件（年率3.5%増）あり。',tags:['美容機器','高額美容機器','大型設備','法人向け'],cats:['machine','medical'],entity:['sole','corp'],emp:['2-5','6-20','21-50','51+']},
+  {id:'sho',name:'省力化投資補助金',rate:'最大 1/2',base:1500,deadline:'2026年随時',adopt:'約50%',period:'3〜5ヶ月',diff:'★★★',desc:'人手不足解消のための自動化・省力化投資を支援。カタログ掲載機器・設備から選ぶだけで申請可能。美容機器・予約システム・セルフレジ等対応。補助率最大1/2、補助上限1,500万円（従業員数による）。締切随時。採択率約50%。賃上げ要件あり。',tags:['随時申請','締切なし','カタログから選ぶだけ'],cats:['machine','ai','medical'],entity:['corp'],emp:['6-20','21-50','51+']}
+];
+const N=5;
+function filled(){
+  let n=0;
+  if(document.querySelector('input[name="entity"]:checked'))n++;
+  if(document.getElementById('industry').value)n++;
+  if(document.getElementById('emp').value)n++;
+  if(document.getElementById('pref').value)n++;
+  if(document.querySelector('.cg input[type="checkbox"]:checked'))n++;
+  return n;
+}
+function upd(){
+  const n=filled(),p=Math.round(n/N*100);
+  document.getElementById('progFill').style.width=p+'%';
+  document.getElementById('progPct').textContent=p+'%';
+  const dots=document.querySelectorAll('.sd');
+  dots.forEach((d,i)=>{d.classList.remove('active','done');if(i<n)d.classList.add('done');if(i===n&&i<dots.length)d.classList.add('active');});
+}
+function validate(){
+  const disc=document.getElementById('disclaimer');
+  const discErr=document.getElementById('disclaimer-err');
+  if(disc&&!disc.checked){if(discErr)discErr.style.display='block';try{const r=disc.closest('.disclaimer-box').getBoundingClientRect();window.scrollTo({top:window.scrollY+r.top-window.innerHeight/2+r.height/2,behavior:'smooth'});}catch(e){}return false;}
+  const e=document.querySelector('input[name="entity"]:checked'),ind=document.getElementById('industry').value,em=document.getElementById('emp').value,pr=document.getElementById('pref').value;
+  const cats=Array.from(document.querySelectorAll('.cg input[type="checkbox"]:checked'));
+  const email=document.getElementById('email').value.trim();
+  if(!e||!ind||!em||!pr||cats.length===0){alert('必須項目をすべて入力・選択してください。');return false;}
+  if(email){const ok=/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);document.getElementById('emailErr').style.display=ok?'none':'block';return ok;}
+  document.getElementById('emailErr').style.display='none';
+  return true;
+}
+function calc(){
+  const entity=document.querySelector('input[name="entity"]:checked').value,emp=document.getElementById('emp').value,cats=Array.from(document.querySelectorAll('.cg input[type="checkbox"]:checked')).map(c=>c.value);
+  return GRANTS.map(g=>{
+    const eOk=g.entity.includes(entity),mOk=g.emp.includes(emp),cOk=cats.some(c=>g.cats.includes(c));
+    let st='out',amt=0;
+    if(eOk&&mOk&&cOk){st='ok';amt=g.base;if(g.id==='jizoku'&&emp==='1')amt=200;if(g.id==='mono'&&entity==='sole')amt=750;if(g.id==='sho'&&emp==='6-20')amt=750;}
+    else if(cOk&&(!eOk||!mOk)){st='check';amt=Math.round(g.base*.4);}
+    return{...g,st,amt};
+  }).sort((a,b)=>{const o={ok:0,check:1,out:2};return o[a.st]-o[b.st]||b.amt-a.amt;});
+}
+function fmt(n){if(n>=10000)return{num:(n/10000).toFixed(1).replace(/\.0$/,''),unit:'億円'};return{num:n.toLocaleString(),unit:'万円'};}
+function render(grants){
+  const el=grants.filter(g=>g.st!=='out'),total=el.reduce((s,g)=>s+g.amt,0);
+  const f=fmt(total);
+  document.getElementById('rAmt').innerHTML=f.num+'<span class="tc-unit">'+f.unit+'</span>';
+  document.getElementById('rDesc').textContent=el.length+'種類の補助金が対象です。最適な申請プランをご提案します。';
+  const bm={ok:{c:'rb-ok',l:'対象'},check:{c:'rb-check',l:'要確認'},out:{c:'rb-out',l:'対象外'}};
+  document.getElementById('grantsGrid').innerHTML=grants.map((g,i)=>{
+    const b=bm[g.st],best=i===0&&g.st==='ok';
+    return`<div class="rgc${g.st==='out'?' rout':''}${best?' rbest':''}" style="animation-delay:${i*.07}s">
+      <div class="rg-head"><div class="rg-left"><span class="rg-badge ${best?'rb-best':b.c}">${best?'★ 最もおすすめ':b.l}</span><div class="rg-name">${g.name}</div></div>
+      <div class="rg-right"><div class="rg-rate">補助率 ${g.rate}</div><div class="rg-max">${g.amt>0?g.amt.toLocaleString():'—'}<span class="rg-u">万円まで</span></div></div></div>
+      <div class="rg-hr"></div>
+      <div class="rg-meta"><div><div class="rgm-l">採択率</div><div class="rgm-v or">${g.adopt}</div></div><div><div class="rgm-l">申請〜採択</div><div class="rgm-v">${g.period}</div></div><div><div class="rgm-l">難易度</div><div class="rgm-v">${g.diff}</div></div><div><div class="rgm-l">締め切り</div><div class="rgm-v dl">${g.deadline}</div></div></div>
+      <div class="rg-desc">${g.desc}</div>
+      <div class="rg-tags">${g.tags.map(t=>`<span class="rg-tag">${t}</span>`).join('')}</div></div>`;
+  }).join('');
+}
+function runSim(){
+  if(!validate())return;
+  const ld=document.getElementById('simLoader');
+  ld.style.display='flex';ld.classList.add('on');
+  let c=10;document.getElementById('lcount').textContent=c;
+  const t=setInterval(()=>{
+    c--;document.getElementById('lcount').textContent=c;
+    if(c<=0){
+      clearInterval(t);const results=calc();render(results);sendToFormspree(results);
+      ld.classList.remove('on');ld.style.display='none';
+      document.getElementById('simForm').style.display='none';
+      document.getElementById('simFrame').style.border='none';
+      const res=document.getElementById('simResults');res.classList.add('on');
+      // iframe内：親ページに高さを通知してスクロール
+      try{
+        const h=document.documentElement.scrollHeight;
+        window.parent.postMessage({type:'sim-resize',height:h},'*');
+        window.parent.postMessage({type:'sim-scroll-top'},'*');
+      }catch(e){}
+      // スタンドアロンの場合
+      try{window.scrollTo({top:0,behavior:'smooth'});}catch(e){}
+    }
+  },180);
+}
+function sendToFormspree(results){
+  try{
+    const entityEl=document.querySelector('input[name="entity"]:checked');
+    const entityLabel={'sole':'個人事業主','corp':'法人','new':'開業予定'};
+    const industry=document.getElementById('industry').value,emp=document.getElementById('emp').value,pref=document.getElementById('pref').value;
+    const rev=document.getElementById('rev')?document.getElementById('rev').value:'';
+    const email=document.getElementById('email').value.trim();
+    const cats=Array.from(document.querySelectorAll('.cg input[type="checkbox"]:checked'))
+      .map(c=>{const l=c.closest('label');return l?l.textContent.trim().split('\n')[0].trim():c.value;}).join('、');
+    const okGrants=results.filter(g=>g.st!=='out'),total=okGrants.reduce((s,g)=>s+g.amt,0);
+    const grantNames=okGrants.map(g=>g.name+'('+g.amt+'万円)').join(' / ');
+    const now=new Date();
+    const dt=now.getFullYear()+'/'+(now.getMonth()+1).toString().padStart(2,'0')+'/'+now.getDate().toString().padStart(2,'0')+' '+now.getHours().toString().padStart(2,'0')+':'+now.getMinutes().toString().padStart(2,'0');
+    fetch('https://formspree.io/f/mojpapvn',{
+      method:'POST',headers:{'Content-Type':'application/json','Accept':'application/json'},
+      body:JSON.stringify({_subject:'【診断ログ】'+industry+' / '+pref+' / 最大'+total+'万円',種別:'補助金シミュレーター診断',診断日時:dt,メールアドレス:email,事業形態:entityEl?entityLabel[entityEl.value]||entityEl.value:'',業種:industry,従業員数:emp,都道府県:pref,年間売上:rev||'未入力',検討内容:cats,受給可能額:'最大'+total+'万円',対象補助金:grantNames||'なし'})
+    }).catch(e=>console.log('formspree:',e));
+  }catch(e){console.log('sendToFormspree error:',e);}
+}
+function updateSubmitBtn(){
+  const checked=document.getElementById('disclaimer')&&document.getElementById('disclaimer').checked;
+  const btn=document.getElementById('submitBtn');
+  const err=document.getElementById('disclaimer-err');
+  if(btn){btn.style.opacity=checked?'1':'0.5';btn.style.cursor=checked?'pointer':'not-allowed';}
+  if(err)err.style.display='none';
+}
+
+
+/* ── iframe高さ自動調整 ── */
+function notifyHeight(){
+  try{
+    const h=document.documentElement.scrollHeight;
+    window.parent.postMessage({type:'sim-resize',height:h},'*');
+  }catch(e){}
+}
+const _ro=new ResizeObserver(notifyHeight);
+_ro.observe(document.body);
+notifyHeight();
+</script>
+</body>
+</html>
